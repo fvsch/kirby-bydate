@@ -18,7 +18,6 @@ The feature set for this function is:
 - *Only* returns URIs for pages with a valid `date` or `Date` metadata field.
 - Set limit dates, and by default do not return pages with a future date.
 - … Which allows you to set pages to be [published in the future](#future-publishing).
-- Return all pages with a date in your site, or limit to a specific folder.
 - Exclude pages with a `status` metadata key set to either `draft`, `archive` or `ignore`. Pages with a different `status` or with no `status` metadata will be included.
 - Option to group by year or year then month, for instance if you want to ouput titles with years or months before the relevant posts.
 - Use `limit` and `offset` options to limit the number of results and perhaps do some semi-manual pagination (sorry, no Kirby pagination object).

@@ -2,16 +2,16 @@
 /*
   Example: Using pagesByDate with results grouped by month
 */
-  $posts = pagesByDate($pages, array('group'=>'month'));
+  $postUris = pagesByDate($pages, array('group'=>'month'));
 ?>
 
-<?php if (!$posts): ?>
+<?php if (!$postUris): ?>
 
 <p>Sorry, nothing to show.</p>
 
 <?php else: ?>
 
-<?php foreach($posts as $year => $months): ?>
+<?php foreach($postUris as $year => $months): ?>
 
 <h2><?php echo $year ?></h2>
 <?php foreach($months as $month => $uris): ?>

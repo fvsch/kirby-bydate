@@ -11,7 +11,7 @@
   );
 
   // If we want all pages with dates in the site, we can do:
-  $events = pagesByDate($pages, $myOptions);
+  $eventUris = pagesByDate($pages, $myOptions);
 
   // If instead we want to limit ourselves to content in a "content/events" folder…
   // (We can't just use $pages->find('events') because it doesn't return a set of pages)
@@ -20,14 +20,14 @@
   // );
 ?>
 
-<?php if (!$events): ?>
+<?php if (!$eventUris): ?>
 
 <p>Sorry, no event planned yet.</p>
 
 <?php else: ?>
 
 <ul>
-<?php foreach($events as $uri): ?>
+<?php foreach($eventUris as $uri): ?>
 <?php $event = $pages->find($uri); ?>
   <li>
     <a href="<?php echo $event->url(); ?>"><?php echo $event->title(); ?></a><br>

@@ -2,17 +2,17 @@
 /*
   Example: Using pagesByDate with default settings
 */
-  $posts = pagesByDate($pages);
+  $postUris = pagesByDate($pages);
 ?>
 
-<?php if (!$posts): ?>
+<?php if (!$postUris): ?>
 
 <p>Sorry, nothing to show.</p>
 
 <?php else: ?>
 
 <ul>
-<?php foreach($posts as $uri): ?>
+<?php foreach($postUris as $uri): ?>
 <?php $post = $pages->find($uri) ?>
   <li>
     <a href="<?php echo $post->url() ?>"><?php echo $post->title() ?></a>

@@ -1,9 +1,7 @@
 Kirby CMS plugin – bydate
 =========================
 
-Kirby plugin that helps working with dated pages, such as blog posts. Provides a `pagesByDate` function for your templates.
-
-**Warning:** This is not yet compatible with Kirby 2.
+Kirby plugin that helps working with dated pages, such as blog posts. Provides a `pagesByDate` function for your templates. Tested on Kirby 1 and Kirby 2b2.
 
 ## Install
 
@@ -36,13 +34,7 @@ The `pagesByDate` function may take two arguments:
 If you want to work on all child pages of a given folder, you could use:
 
 ```php
-$posts = pagesByDate($pages->find('myfolder')->children());
-```
-
-If you want to include descendant pages as well, you can use:
-
-```php
-$posts = pagesByDate($pages->find('myfolder')->children(), array('recursive', true));
+$postUris = pagesByDate($pages->find('myfolder')->children());
 ```
 
 Note that we need to use `->children()`, since `$pages->find()` will return a unique page, and we need a set of pages instead.
@@ -50,7 +42,7 @@ Note that we need to use `->children()`, since `$pages->find()` will return a un
 To set some custom options:
 
 ```php
-$posts = pagesByDate($pages, array('order'=>'asc', 'recursive'=>false));
+$postUris = pagesByDate($pages, array('order'=>'asc'));
 ```
 
 See the option documentation below for available options.
@@ -60,16 +52,16 @@ See the option documentation below for available options.
 Here's a basic example:
 
 ```php
-<?php foreach (pagesByDate($pages) as $uri): ?>
-<?php $p = $pages->find($uri) ?>
+<?php foreach (pagesByDate($pages) as $postUri): ?>
+<?php $post = $pages->find($postUri); ?>
 <p>
-  <a href="<?php echo $p->url() ?>"><?php echo $p->title() ?></a>
-  - <?php echo $p->date('j F Y') ?>
+  <a href="<?php echo $post->url(); ?>"><?php echo $post->title(); ?></a>
+  - <?php echo $post->date('j F Y'); ?>
 </p>
 <?php endforeach; ?>
 ```
 
-(Make sure you put `bydate.php` in your `plugins` folder first.)
+(Make sure you put `bydate.php` in your `site/plugins` folder first.)
 
 See complete examples:
 
@@ -78,7 +70,31 @@ See complete examples:
 - [Example with results grouped by year](templates/bydate-years.php)
 - [Example with results grouped by month](templates/bydate-months.php)
 
-## Highlights
+### Recursive listing
+
+Right now if you’re trying to list all dated pages from different folders and at different levels, it can prove a bit tricky in Kirby 1. `pagesByDate()` used to have a `recursive` option but it was a hack with several issues so I removed it.
+
+In Kirby 2, you should be able to use `$pages->index()`:
+
+```php
+// URIs for all pages in your site
+$postUris = pagesbyDate( $pages->index() );
+
+// URIs for all child and descendant pages in a 'blog' folder
+$postUris = pagesbyDate( $pages->get('blog')->index() );
+```
+
+### Exclude pages with `status` metadata
+
+If you want to exclude pages from what `pagesByDate()` returns, you can add a `Status` metadata field to your pages with any of those values:
+
+- `draft`
+- `archive`
+- `ignore`
+
+These three values are hardcoded in bydate.php. In a future version I might offer an option to change them.
+
+Note that Kirby 2 also has `$pages->filter()` and `$pages->filterBy()` which could allow you to do the same thing with any metadata key or value(s).
 
 ### Future publishing
 
@@ -99,7 +115,7 @@ Let’s be clear about posts “going live”: we only mean that any place you u
 ### Group results by year
 
 ```php
-pagesByDate($pages, array('group'=>'year'));
+$postUris = pagesByDate($pages, array('group'=>'year'));
 ```
 
 will return an array of page URIs that may look like (pseudocode):
@@ -117,7 +133,7 @@ See [Example with results grouped by year](templates/bydate-years.php) for relev
 ### Group results by month
 
 ```php
-pagesByDate($pages, array('group'=>'month'));
+$postUris = pagesByDate($pages, array('group'=>'month'));
 ```
 
 will return an array of page URIs that may look like (pseudocode):
@@ -138,22 +154,27 @@ where each item in the deepest arrays is a Kirby page URI.
 
 See [Example with results grouped by month](templates/bydate-months.php) for relevant templating code.
 
+### Set options in config
+
+We're using the same option keys, prefixed with 'bydate.'
+
+For instance, adding these lines to your `site/config/config.php` would set the same thing as the default values:
+
+```php
+c::set('bydate.order', 'desc');
+c::set('bydate.limit', 100);
+c::set('bydate.offset', 0);
+c::set('bydate.max', time());
+c::set('bydate.min', 0);
+c::set('bydate.group', 'none');
+```
+
+Values set in an option array passed to the `pagesByDate` will take precedence over site config.
+
 ## Option documentation
 
     order:      Sort order: 'asc' (oldest first) or 'desc' (newest first).
                 Defaults to 'desc'.
-    
-    recursive:  Boolean.
-                Should we get all *descendant* pages when working from a list
-                pages such as $pages->find('somefolder')->children()?
-                Defaults to false.
-
-                KNOWN ISSUE when using 'recursive'=>true: if some subfolders use
-                the same name, e.g. "source" or "data" or whatever, we end up
-                with a FatalError. To avoid this, you could not name folders
-                identically, or use names that start with an underscore,
-                e.g. "_source", "_data" (these will not be returned in the results).
-                Any better solution is welcomed.
     
     limit:      Integer. Max number of posts to return.
                 Defaults to 100.
@@ -179,21 +200,3 @@ See [Example with results grouped by month](templates/bydate-months.php) for rel
                 Month arrays have keys looking like '01', '02', …, '12'.
                 Use var_dump to look at the resulting array's structure,
                 or look at the templating examples.
-
-## Set options in config
-
-We're using the same option keys, prefixed with 'bydate.'
-
-For instance, adding these lines to your `site/config/config.php` would set the same thing as the default values:
-
-```php
-c::set('bydate.recursive', false);
-c::set('bydate.order', 'desc');
-c::set('bydate.limit', 100);
-c::set('bydate.offset', 0);
-c::set('bydate.max', time());
-c::set('bydate.min', 0);
-c::set('bydate.group', 'none');
-```
-
-Values set in an option array passed to the `pagesByDate` will take precedence over site config.

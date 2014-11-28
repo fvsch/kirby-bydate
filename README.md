@@ -1,7 +1,7 @@
 Kirby CMS plugin – bydate
 =========================
 
-Kirby plugin that helps working with dated pages, such as blog posts. Provides a `pagesByDate` function for your templates. Tested on Kirby 1 and Kirby 2b2.
+Kirby plugin that helps working with dated pages, such as blog posts. Provides a `pagesByDate` function for your templates. Tested on Kirby 1 and 2.
 
 ## Install
 

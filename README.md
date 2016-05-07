@@ -1,15 +1,26 @@
-Kirby CMS plugin – bydate
-=========================
+DEPRECATED: Kirby bydate plugin
+===============================
 
-Kirby plugin that helps working with dated pages, such as blog posts. Provides a `pagesByDate` function for your templates. Tested on Kirby 1 and 2.
+I originally made this plugin because Kirby 1 had slightly limited tools for filtering page collections, sorting efficiently by date, getting all descendants of a page, etc. This is not the case anymore in Kirby 2.x, and using Kirby’s native API is arguably easier than using this plugin, so consider it deprecated.
 
-## Install
+In Kirby 2.x you have all the tools you need to do the kind of filtering that this plugin does.
+
+See: https://getkirby.com/docs  
+And in particular: https://getkirby.com/docs/solutions/filtering
+
+---
+
+## Legacy documentation
+
+Kirby plugin that helps working with dated pages, such as blog posts. Provides a pagesByDate function for your templates. Tested on Kirby 1 and 2.
+
+### Install
 
 1. Get [bydate.php](plugins/bydate.php) and put it in the `site/plugins` folder of your Kirby-powered site.
 
 2. Optional: [Download or copy example templates](templates/). Some can be included as-is in your templates, but you’ll probably want to copy the relevant examples and customize them in your own templates.
 
-## pagesByDate function
+### pagesByDate function
 
 Function which returns an array of Kirby page URIs, or nested arrays when grouping by year or month.
 
@@ -22,7 +33,7 @@ The feature set for this function is:
 - Option to group by year or year then month, for instance if you want to ouput titles with years or months before the relevant posts.
 - Use `limit` and `offset` options to limit the number of results and perhaps do some semi-manual pagination (sorry, no Kirby pagination object).
 
-### Usage
+#### Usage
 
 The `pagesByDate` function may take two arguments:
 
@@ -46,7 +57,7 @@ $postUris = pagesByDate($pages, array('order'=>'asc'));
 
 See the option documentation below for available options.
 
-### How to use in templates
+#### How to use in templates
 
 Here's a basic example:
 
@@ -69,7 +80,7 @@ See complete examples:
 - [Example with results grouped by year](templates/bydate-years.php)
 - [Example with results grouped by month](templates/bydate-months.php)
 
-### Recursive listing
+#### Recursive listing
 
 Right now if you’re trying to list all dated pages from different folders and at different levels, it can prove a bit tricky in Kirby 1. `pagesByDate()` used to have a `recursive` option but it was a hack with several issues so I removed it.
 
@@ -83,7 +94,7 @@ $postUris = pagesbyDate( $pages->index() );
 $postUris = pagesbyDate( $pages->get('blog')->index() );
 ```
 
-### Exclude pages with `status` metadata
+#### Exclude pages with `status` metadata
 
 If you want to exclude pages from what `pagesByDate()` returns, you can add a `Status` metadata field to your pages with any of those values:
 
@@ -95,7 +106,7 @@ These three values are hardcoded in bydate.php. In a future version I might offe
 
 Note that Kirby 2 also has `$pages->filter()` and `$pages->filterBy()` which could allow you to do the same thing with any metadata key or value(s).
 
-### Future publishing
+#### Future publishing
 
 If you write a post with a date in the future:
 
@@ -111,7 +122,7 @@ Warning: the function currently doesn’t manage time zones in any way!
 
 Let’s be clear about posts “going live”: we only mean that any place you used `pagesByDate` with the default `max` setting will not show a page with a date in the future. So the lists of posts, archives, and RSS/Atom feeds in your site all use `pagesByDate`, that makes your content almost invisible. Almost, because you can still see it if you go to the post’s own URL (unless you write some date-based logic of your own in the template that handles showing your posts).
 
-### Group results by year
+#### Group results by year
 
 ```php
 $postUris = pagesByDate($pages, array('group'=>'year'));
@@ -129,7 +140,7 @@ where each item in the child arrays is a Kirby page URI.
 
 See [Example with results grouped by year](templates/bydate-years.php) for relevant templating code.
 
-### Group results by month
+#### Group results by month
 
 ```php
 $postUris = pagesByDate($pages, array('group'=>'month'));
@@ -153,7 +164,7 @@ where each item in the deepest arrays is a Kirby page URI.
 
 See [Example with results grouped by month](templates/bydate-months.php) for relevant templating code.
 
-### Set options in config
+#### Set options in config
 
 We're using the same option keys, prefixed with 'bydate.'
 
@@ -170,7 +181,7 @@ c::set('bydate.group', 'none');
 
 Values set in an option array passed to the `pagesByDate` will take precedence over site config.
 
-## Option documentation
+### Option documentation
 
     order:      Sort order: 'asc' (oldest first) or 'desc' (newest first).
                 Defaults to 'desc'.
